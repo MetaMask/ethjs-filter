@@ -36,16 +36,13 @@ function constructFilter(filterName, query) {
             }
 
             if (decodingError) {
-              watcher.reject(decodingError);
               watcher.callback(decodingError, null);
             } else {
               if (changeError) {
-                watcher.reject(changeError);
+                watcher.callback(changeError, null);
               } else if (Array.isArray(decodedChangeResults) && changeResult.length > 0) {
-                watcher.resolve(decodedChangeResults);
+                watcher.callback(changeError, decodedChangeResults);
               }
-
-              watcher.callback(changeError, decodedChangeResults);
             }
           });
         });
@@ -62,38 +59,38 @@ function constructFilter(filterName, query) {
     var callback = watchCallbackInput || function() {}; // eslint-disable-line
     const self = this;
     const id = Math.random().toString(36).substring(7);
-    const output = new Promise((resolve, reject) => {
-      self.watchers[id] = { resolve, reject, callback, stop: false };
-    });
-
-    output.stopWatching = function stopWatching() {
+    self.watchers[id] = { callback, stop: false, stopWatching: (() => {
       self.watchers[id].stop = true;
-    };
+    }) };
 
-    return output;
+    return self.watchers[id];
   };
 
   Filter.prototype.uninstall = function uninstallFilter(cb) {
     const self = this;
-    const callback = cb || function emptyCallback() {};
+    const callback = cb || null;
     self.watchers = Object.assign({});
     clearInterval(self.interval);
 
-    return new Promise((resolve, reject) => {
+    const prom = new Promise((resolve, reject) => {
       query.uninstallFilter(self.filterId, (uninstallError, uninstallResilt) => {
         if (uninstallError) {
           reject(uninstallError);
         } else {
           resolve(uninstallResilt);
         }
-
-        callback(uninstallError, uninstallResilt);
       });
     });
+
+    if (callback) {
+      prom.then(res => callback(null, res)).catch(err => callback(err, null));
+    }
+
+    return callback ? null : prom;
   };
 
   Filter.prototype.new = function newFilter() {
-    var callback = () => {}; // eslint-disable-line
+    var callback = null; // eslint-disable-line
     const self = this;
     const filterInputs = [];
     const args = [].slice.call(arguments); // eslint-disable-line
@@ -108,7 +105,7 @@ function constructFilter(filterName, query) {
         (args[args.length - 1] || {})));
     }
 
-    return new Promise((resolve, reject) => {
+    const prom = new Promise((resolve, reject) => {
       // add complex callback
       filterInputs.push((setupError, filterId) => {
         if (!setupError) {
@@ -117,13 +114,17 @@ function constructFilter(filterName, query) {
         } else {
           reject(setupError);
         }
-
-        callback(setupError, filterId);
       });
 
       // apply filter, call new.. filter method
       query[`new${filterName}`].apply(query, filterInputs);
     });
+
+    if (callback) {
+      prom.then(res => callback(null, res)).catch(err => callback(err, null));
+    }
+
+    return callback ? null : prom;
   };
 
   return Filter;

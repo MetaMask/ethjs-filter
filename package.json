@@ -1,6 +1,6 @@
 {
   "name": "ethjs-filter",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A simple filter handler for the Ethereum RPC layer.",
   "main": "lib/index.js",
   "files": [
@@ -140,7 +140,7 @@
     "eslint-plugin-react": "5.1.1",
     "ethereumjs-testrpc": "3.0.2",
     "ethjs-abi": "0.0.1",
-    "ethjs-query": "0.0.5",
+    "ethjs-query": "0.3.4",
     "ethjs-sha3": "0.0.1",
     "eventsource-polyfill": "0.9.6",
     "istanbul": "0.4.5",

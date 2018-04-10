@@ -1,3 +1,8 @@
+# 0.1.6 -- unhandled promise rejection
+
+1. Fixed unhandled promise rejection
+2. Removed promise watch, only for callbacks
+
 # 0.1.5 -- config fixes
 
 1. webpack config updates

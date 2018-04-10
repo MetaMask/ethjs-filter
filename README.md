@@ -63,7 +63,7 @@ const filter = new filters.Filter({ delay: 300 })
 .catch((error) => {
   // result null
 });
-filter.watch((result) => {
+filter.watch((err, result) => {
   // result [{...}, ...] (fires multiple times)
 });
 filter.uninstall(cb);
@@ -71,7 +71,7 @@ filter.uninstall(cb);
 
 const filter = new filters.BlockFilter()
 .at(7)
-filter.watch((result) => {
+filter.watch((err, result) => {
   // result [{...}, ...] (fires multiple times)
 });
 filter.uninstall(cb);
