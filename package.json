@@ -1,6 +1,6 @@
 {
   "name": "ethjs-filter",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "A simple filter handler for the Ethereum RPC layer.",
   "main": "lib/index.js",
   "files": [
@@ -132,6 +132,7 @@
     "check-es3-syntax-cli": "0.1.3",
     "coveralls": "2.11.9",
     "eslint": "2.10.1",
+    "ganache-core": "2.1.0",
     "eslint-config-airbnb": "9.0.1",
     "eslint-import-resolver-webpack": "0.2.4",
     "eslint-plugin-import": "1.8.0",
@@ -204,8 +205,5 @@
       ]
     }
   },
-  "pre-commit": "build",
-  "dependencies": {
-    "ganache-core": "^2.1.0"
-  }
+  "pre-commit": "build"
 }
