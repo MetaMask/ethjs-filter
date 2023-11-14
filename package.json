@@ -126,7 +126,7 @@
     "babel-plugin-transform-object-rest-spread": "6.19.0",
     "babel-register": "6.18.0",
     "chai": "^4.3.10",
-    "cross-env": "1.0.7",
+    "cross-env": "^6.0.3",
     "eslint": "2.10.1",
     "ganache-cli": "^6.12.2",
     "eslint-config-airbnb": "9.0.1",
