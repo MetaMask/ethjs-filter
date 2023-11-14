@@ -24,8 +24,8 @@
     "prepare": "npm run build",
     "pretest": "npm run lint",
     "test:clean": "rimraf ./coverage",
-    "test": "mocha ./src/tests/**/*.js -R spec --timeout 2000000",
-    "test:lib": "mocha ./lib/tests/**/*.js -R spec --timeout 2000000",
+    "test": "mocha ./src/tests/**/*.js -R spec --timeout 2000000 --check-leaks --exit",
+    "test:lib": "mocha ./lib/tests/**/*.js -R spec --timeout 2000000 --check-leaks --exit",
     "test:coverage": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- src/tests/**/*.js -R spec --timeout 2000000"
   },
   "repository": {
@@ -140,7 +140,7 @@
     "ethjs-sha3": "0.0.1",
     "istanbul": "0.4.5",
     "json-loader": "0.5.4",
-    "mocha": "3.1.2",
+    "mocha": "~7.2.0",
     "pre-commit": "1.1.3",
     "rimraf": "^3.0.2",
     "webpack": "2.1.0-beta.15"
