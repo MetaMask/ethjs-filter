@@ -12,7 +12,7 @@ npm install --save @metamask/ethjs-filter
 
 ```js
 const HttpProvider = require('ethjs-provider-http');
-const Eth = require('ethjs-query');
+const Eth = require('@metamask/ethjs-query');
 const EthFilter = require('ethjs-filter');
 const eth = new Eth(new HttpProvider('http://localhost:8545'));
 const filters = new EthFilter(eth);
