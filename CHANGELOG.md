@@ -7,22 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.3.0]
-### Uncategorized
-- ci: fix publishing compatibility with npm
-- devDeps: ethjs-abi@0.0.1->0.2.1
-- docs: recommend @metamask/ethjs-query instead of ethjs-query
-- devDeps: ethjs-query@0.3.6 -> @metamask/ethjs-query@^0.7.0
-- devDeps: babel-*@6 -> @babel/*@^7
-- devDeps: ethjs-sha3@0.0.1->0.1.3
-- devDeps: remove unused ethereumjs-testrpc
-- devDeps: eslint@2->^5
-- devDeps: webpack@2.1.0-beta.15->^3.12.0
-- devDeps: cross-env@1.0.7->^6.0.3
-- devDeps: json-loader@0.5.4->^0.5.7
-- devDeps: pre-commit@1.1.3->^1.2.2
-- devDeps: chai@3.5.0->^4.3.10
-- devDeps: mocha@3.2.0->^7.2.0
-- devDeps: rimraf@2.3.4->^3.0.2
+### Fixed
+- **BREAKING**: Add peerDependency `@babel/runtime@^7.0.0` ([#8](https://github.com/MetaMask/ethjs-filter/pull/8))
+- Upgrade babel from 6 to 7 ([#8](https://github.com/MetaMask/ethjs-filter/pull/8))
+- Upgrade webpack from 2 to 3 ([#8](https://github.com/MetaMask/ethjs-filter/pull/8))
+- docs: recommend `@metamask/ethjs-query` instead of `ethjs-query` ([#8](https://github.com/MetaMask/ethjs-filter/pull/8))
 
 ## [0.2.0]
 ### Changed
