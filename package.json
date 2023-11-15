@@ -134,7 +134,6 @@
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.2",
-    "ethereumjs-testrpc": "3.0.2",
     "ethjs-abi": "0.0.1",
     "ethjs-query": "0.3.6",
     "ethjs-sha3": "0.0.1",
