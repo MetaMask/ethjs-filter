@@ -1,7 +1,7 @@
 const Ganache = require('ganache-cli');
 
 const provider = Ganache.provider();
-const Eth = require('ethjs-query');
+const Eth = require('@metamask/ethjs-query');
 const { assert } = require('chai');
 const sha3 = require('ethjs-sha3');  // eslint-disable-line
 const abi = require('ethjs-abi');    // eslint-disable-line
