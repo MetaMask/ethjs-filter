@@ -1,10 +1,12 @@
 const Ganache = require('ganache-cli');
+
 const provider = Ganache.provider();
 const Eth = require('ethjs-query');
-const EthFilter = require('../index.js');
-const assert = require('chai').assert;
+const { assert } = require('chai');
 const sha3 = require('ethjs-sha3');  // eslint-disable-line
 const abi = require('ethjs-abi');    // eslint-disable-line
+const EthFilter = require('../index');
+
 console.warn = function warn() {}; // eslint-disable-line
 
 describe('EthFilter', () => {
@@ -215,23 +217,23 @@ describe('EthFilter', () => {
       const filters = new EthFilter(eth);
       const filter = new filters.Filter();
       filter.new({ fromBlock: 0 })
-      .catch((error) => {
-        assert.equal(error, null);
-      })
-      .then((result) => {
-        assert.equal(typeof result, 'object');
-        assert.equal(filter.filterId.toNumber(10) >= 0, true);
-
-        filter.uninstall()
-        .catch((uninstallError) => {
-          assert.equal(uninstallError, null);
+        .catch((error) => {
+          assert.equal(error, null);
         })
-        .then((uninstallResult) => {
-          assert.equal(typeof uninstallResult, 'boolean');
+        .then((result) => {
+          assert.equal(typeof result, 'object');
+          assert.equal(filter.filterId.toNumber(10) >= 0, true);
 
-          done();
+          filter.uninstall()
+            .catch((uninstallError) => {
+              assert.equal(uninstallError, null);
+            })
+            .then((uninstallResult) => {
+              assert.equal(typeof uninstallResult, 'boolean');
+
+              done();
+            });
         });
-      });
     });
 
     it('Filter watch should catch thrown decoder error', (done) => {
@@ -244,16 +246,18 @@ describe('EthFilter', () => {
         const self = this;
 
         if (payload.method === 'eth_getFilterChanges') {
-          callback(null, { result: [{
-            logIndex: '0x0',
-            blockNumber: '0x1b4',
-            blockHash: '0x8216c5785ac562ff41e2dcfdf5785ac562ff41e2dcfdf829c5a142f1fccd7d54',
-            transactionHash: '0xdf829c5a142f1fccd7d8216c5785ac562ff41e2dcfdf5785ac562ff41e2dc23f',
-            transactionIndex: '0x0',
-            address: '0x16c5785ac562ff41e2dcfdf829c5a142f1fccd7d',
-            data: '0x0000000000000000000000000000000000000000000000000000000000001194000000000000000000000000ca35b7d915458ef540ade6068dfe2f44e8fa733c',
-            topics: ['0x59ebeb90bc63057b6515673c3ecf9438e5058bca0f92585014eced636878c9a5'],
-          }] });
+          callback(null, {
+            result: [{
+              logIndex: '0x0',
+              blockNumber: '0x1b4',
+              blockHash: '0x8216c5785ac562ff41e2dcfdf5785ac562ff41e2dcfdf829c5a142f1fccd7d54',
+              transactionHash: '0xdf829c5a142f1fccd7d8216c5785ac562ff41e2dcfdf5785ac562ff41e2dc23f',
+              transactionIndex: '0x0',
+              address: '0x16c5785ac562ff41e2dcfdf829c5a142f1fccd7d',
+              data: '0x0000000000000000000000000000000000000000000000000000000000001194000000000000000000000000ca35b7d915458ef540ade6068dfe2f44e8fa733c',
+              topics: ['0x59ebeb90bc63057b6515673c3ecf9438e5058bca0f92585014eced636878c9a5'],
+            }],
+          });
         } else {
           self.provider.sendAsync(payload, callback);
         }
@@ -270,14 +274,14 @@ describe('EthFilter', () => {
         });
 
         filter.new({ fromBlock: 0, toBlock: 'latest', address: accounts[0] })
-        .catch((filterError) => {
-          assert.equal(filterError, null);
-        })
-        .then((filterId) => {
-          assert.equal(typeof filterId, 'object');
-          filter.watch((watchError, watchResult) => {
-            assert.equal(typeof watchError, 'object');
-            assert.equal(watchResult, null);
+          .catch((filterError) => {
+            assert.equal(filterError, null);
+          })
+          .then((filterId) => {
+            assert.equal(typeof filterId, 'object');
+            filter.watch((watchError, watchResult) => {
+              assert.equal(typeof watchError, 'object');
+              assert.equal(watchResult, null);
 
             /*
             filter.uninstall()
@@ -286,10 +290,10 @@ describe('EthFilter', () => {
               done();
             })
             .catch(err => assert.isOk(err)); */
-          });
+            });
 
-          done();
-        });
+            done();
+          });
       });
     });
 
@@ -302,33 +306,33 @@ describe('EthFilter', () => {
 
         const filter = new filters.Filter();
         filter.new({ fromBlock: 0, toBlock: 'latest', address: accounts[0] })
-        .catch((filterError) => {
-          assert.equal(filterError, null);
-        })
-        .then((filterId) => {
-          assert.equal(typeof filterId, 'object');
+          .catch((filterError) => {
+            assert.equal(filterError, null);
+          })
+          .then((filterId) => {
+            assert.equal(typeof filterId, 'object');
 
-          const watcher = filter.watch((watchError, watchResult) => {
-            assert.equal(watchError, null);
-            assert.equal(Array.isArray(watchResult), true);
+            const watcher = filter.watch((watchError, watchResult) => {
+              assert.equal(watchError, null);
+              assert.equal(Array.isArray(watchResult), true);
+            });
+
+            setTimeout(() => {
+              watcher.stopWatching();
+              done();
+            }, 1400);
+
+            eth.sendTransaction({
+              from: accounts[0],
+              to: accounts[1],
+              value: 3000,
+              gas: 3000000,
+              data: '0x',
+            }, (txError, txResult) => {
+              assert.equal(txError, null);
+              assert.equal(typeof txResult, 'string');
+            });
           });
-
-          setTimeout(() => {
-            watcher.stopWatching();
-            done();
-          }, 1400);
-
-          eth.sendTransaction({
-            from: accounts[0],
-            to: accounts[1],
-            value: 3000,
-            gas: 3000000,
-            data: '0x',
-          }, (txError, txResult) => {
-            assert.equal(txError, null);
-            assert.equal(typeof txResult, 'string');
-          });
-        });
       });
     });
 
@@ -341,38 +345,38 @@ describe('EthFilter', () => {
 
         const filter = new filters.Filter();
         filter.new({ fromBlock: 0, toBlock: 'latest', address: accounts[0] })
-        .catch((filterError) => {
-          assert.equal(filterError, null);
-        })
-        .then((filterId) => {
-          assert.equal(typeof filterId, 'object');
+          .catch((filterError) => {
+            assert.equal(filterError, null);
+          })
+          .then((filterId) => {
+            assert.equal(typeof filterId, 'object');
 
-          filter.watch((watchError, watchResult) => {
-            assert.equal(watchError, null);
-            assert.equal(Array.isArray(watchResult), true);
-          });
-
-          setTimeout(() => {
-            assert.equal(Object.keys(filter.watchers).length, 1);
-
-            filter.uninstall().then((uninstallResult) => {
-              assert.equal(typeof uninstallResult, 'boolean');
-              assert.equal(Object.keys(filter.watchers).length, 0);
-              done();
+            filter.watch((watchError, watchResult) => {
+              assert.equal(watchError, null);
+              assert.equal(Array.isArray(watchResult), true);
             });
-          }, 1400);
 
-          eth.sendTransaction({
-            from: accounts[0],
-            to: accounts[1],
-            value: 3000,
-            gas: 3000000,
-            data: '0x',
-          }, (txError, txResult) => {
-            assert.equal(txError, null);
-            assert.equal(typeof txResult, 'string');
+            setTimeout(() => {
+              assert.equal(Object.keys(filter.watchers).length, 1);
+
+              filter.uninstall().then((uninstallResult) => {
+                assert.equal(typeof uninstallResult, 'boolean');
+                assert.equal(Object.keys(filter.watchers).length, 0);
+                done();
+              });
+            }, 1400);
+
+            eth.sendTransaction({
+              from: accounts[0],
+              to: accounts[1],
+              value: 3000,
+              gas: 3000000,
+              data: '0x',
+            }, (txError, txResult) => {
+              assert.equal(txError, null);
+              assert.equal(typeof txResult, 'string');
+            });
           });
-        });
       });
     });
 
@@ -386,16 +390,18 @@ describe('EthFilter', () => {
         const self = this;
 
         if (payload.method === 'eth_getFilterChanges') {
-          callback(null, { result: [{
-            logIndex: '0x0',
-            blockNumber: '0x1b4',
-            blockHash: '0x8216c5785ac562ff41e2dcfdf5785ac562ff41e2dcfdf829c5a142f1fccd7d54',
-            transactionHash: '0xdf829c5a142f1fccd7d8216c5785ac562ff41e2dcfdf5785ac562ff41e2dc23f',
-            transactionIndex: '0x0',
-            address: '0x16c5785ac562ff41e2dcfdf829c5a142f1fccd7d',
-            data: '0x0000000000000000000000000000000000000000000000000000000000001194000000000000000000000000ca35b7d915458ef540ade6068dfe2f44e8fa733c',
-            topics: ['0x59ebeb90bc63057b6515673c3ecf9438e5058bca0f92585014eced636878c9a5'],
-          }] });
+          callback(null, {
+            result: [{
+              logIndex: '0x0',
+              blockNumber: '0x1b4',
+              blockHash: '0x8216c5785ac562ff41e2dcfdf5785ac562ff41e2dcfdf829c5a142f1fccd7d54',
+              transactionHash: '0xdf829c5a142f1fccd7d8216c5785ac562ff41e2dcfdf5785ac562ff41e2dc23f',
+              transactionIndex: '0x0',
+              address: '0x16c5785ac562ff41e2dcfdf829c5a142f1fccd7d',
+              data: '0x0000000000000000000000000000000000000000000000000000000000001194000000000000000000000000ca35b7d915458ef540ade6068dfe2f44e8fa733c',
+              topics: ['0x59ebeb90bc63057b6515673c3ecf9438e5058bca0f92585014eced636878c9a5'],
+            }],
+          });
         } else {
           self.provider.sendAsync(payload, callback);
         }
@@ -409,40 +415,40 @@ describe('EthFilter', () => {
 
         const filter = new filters.Filter();
         filter.new({ fromBlock: 0, toBlock: 'latest', address: accounts[0] })
-        .catch((filterError) => {
-          assert.equal(filterError, null);
-        })
-        .then((filterId) => {
-          assert.equal(typeof filterId, 'object');
+          .catch((filterError) => {
+            assert.equal(filterError, null);
+          })
+          .then((filterId) => {
+            assert.equal(typeof filterId, 'object');
 
-          filter.watch((watchError, watchResult) => {
-            assert.equal(watchError, null);
-            assert.equal(Array.isArray(watchResult), true);
-            assert.equal(watchResult.length, 1);
-            assert.equal(watchResult[0].logIndex.toNumber(10) >= 0, true);
-          });
-
-          setTimeout(() => {
-            assert.equal(Object.keys(filter.watchers).length, 1);
-
-            filter.uninstall().then((uninstallResult) => {
-              assert.equal(typeof uninstallResult, 'boolean');
-              assert.equal(Object.keys(filter.watchers).length, 0);
-              done();
+            filter.watch((watchError, watchResult) => {
+              assert.equal(watchError, null);
+              assert.equal(Array.isArray(watchResult), true);
+              assert.equal(watchResult.length, 1);
+              assert.equal(watchResult[0].logIndex.toNumber(10) >= 0, true);
             });
-          }, 1400);
 
-          eth.sendTransaction({
-            from: accounts[0],
-            to: accounts[1],
-            value: 3000,
-            gas: 3000000,
-            data: '0x',
-          }, (txError, txResult) => {
-            assert.equal(txError, null);
-            assert.equal(typeof txResult, 'string');
+            setTimeout(() => {
+              assert.equal(Object.keys(filter.watchers).length, 1);
+
+              filter.uninstall().then((uninstallResult) => {
+                assert.equal(typeof uninstallResult, 'boolean');
+                assert.equal(Object.keys(filter.watchers).length, 0);
+                done();
+              });
+            }, 1400);
+
+            eth.sendTransaction({
+              from: accounts[0],
+              to: accounts[1],
+              value: 3000,
+              gas: 3000000,
+              data: '0x',
+            }, (txError, txResult) => {
+              assert.equal(txError, null);
+              assert.equal(typeof txResult, 'string');
+            });
           });
-        });
       });
     });
   });

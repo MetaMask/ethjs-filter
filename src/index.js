@@ -37,12 +37,10 @@ function constructFilter(filterName, query) {
 
             if (decodingError) {
               watcher.callback(decodingError, null);
-            } else {
-              if (changeError) {
-                watcher.callback(changeError, null);
-              } else if (Array.isArray(decodedChangeResults) && changeResult.length > 0) {
-                watcher.callback(changeError, decodedChangeResults);
-              }
+            } else if (changeError) {
+              watcher.callback(changeError, null);
+            } else if (Array.isArray(decodedChangeResults) && changeResult.length > 0) {
+              watcher.callback(changeError, decodedChangeResults);
             }
           });
         });
@@ -59,9 +57,13 @@ function constructFilter(filterName, query) {
     var callback = watchCallbackInput || function() {}; // eslint-disable-line
     const self = this;
     const id = Math.random().toString(36).substring(7);
-    self.watchers[id] = { callback, stop: false, stopWatching: (() => {
-      self.watchers[id].stop = true;
-    }) };
+    self.watchers[id] = {
+      callback,
+      stop: false,
+      stopWatching: (() => {
+        self.watchers[id].stop = true;
+      }),
+    };
 
     return self.watchers[id];
   };
@@ -117,6 +119,7 @@ function constructFilter(filterName, query) {
       });
 
       // apply filter, call new.. filter method
+      // eslint-disable-next-line prefer-spread
       query[`new${filterName}`].apply(query, filterInputs);
     });
 
