@@ -92,7 +92,6 @@ function constructFilter(filterName, query) {
       },
       defaultFilterObject: {}
     }, options || {});
-
     self.watchers = {};
     self.interval = setInterval(function () {
       if (self.filterId !== null && Object.keys(self.watchers).length > 0) {
@@ -109,54 +108,49 @@ function constructFilter(filterName, query) {
                 }
               });
             } catch (decodingErrorMesage) {
-              decodingError = new Error('[ethjs-filter] while decoding filter change event data from RPC \'' + JSON.stringify(decodedChangeResults) + '\': ' + decodingErrorMesage);
+              decodingError = new Error("[ethjs-filter] while decoding filter change event data from RPC '" + JSON.stringify(decodedChangeResults) + "': " + decodingErrorMesage);
             }
           }
-
           Object.keys(self.watchers).forEach(function (id) {
             var watcher = self.watchers[id];
             if (watcher.stop === true) {
               delete self.watchers[id];
               return;
             }
-
             if (decodingError) {
               watcher.callback(decodingError, null);
-            } else {
-              if (changeError) {
-                watcher.callback(changeError, null);
-              } else if (Array.isArray(decodedChangeResults) && changeResult.length > 0) {
-                watcher.callback(changeError, decodedChangeResults);
-              }
+            } else if (changeError) {
+              watcher.callback(changeError, null);
+            } else if (Array.isArray(decodedChangeResults) && changeResult.length > 0) {
+              watcher.callback(changeError, decodedChangeResults);
             }
           });
         });
       }
     }, self.options.delay);
   }
-
   Filter.prototype.at = function atFilter(filterId) {
     var self = this;
     self.filterId = filterId;
   };
-
   Filter.prototype.watch = function watchFilter(watchCallbackInput) {
     var callback = watchCallbackInput || function () {}; // eslint-disable-line
     var self = this;
     var id = Math.random().toString(36).substring(7);
-    self.watchers[id] = { callback: callback, stop: false, stopWatching: function stopWatching() {
+    self.watchers[id] = {
+      callback: callback,
+      stop: false,
+      stopWatching: function stopWatching() {
         self.watchers[id].stop = true;
-      } };
-
+      }
+    };
     return self.watchers[id];
   };
-
   Filter.prototype.uninstall = function uninstallFilter(cb) {
     var self = this;
     var callback = cb || null;
     self.watchers = Object.assign({});
     clearInterval(self.interval);
-
     var prom = new Promise(function (resolve, reject) {
       query.uninstallFilter(self.filterId, function (uninstallError, uninstallResilt) {
         if (uninstallError) {
@@ -166,19 +160,16 @@ function constructFilter(filterName, query) {
         }
       });
     });
-
     if (callback) {
       prom.then(function (res) {
         return callback(null, res);
-      })['catch'](function (err) {
+      })["catch"](function (err) {
         return callback(err, null);
       });
     }
-
     return callback ? null : prom;
   };
-
-  Filter.prototype['new'] = function newFilter() {
+  Filter.prototype["new"] = function newFilter() {
     var callback = null; // eslint-disable-line
     var self = this;
     var filterInputs = [];
@@ -192,7 +183,6 @@ function constructFilter(filterName, query) {
     if (filterName === 'Filter') {
       filterInputs.push(Object.assign(self.options.defaultFilterObject, args[args.length - 1] || {}));
     }
-
     var prom = new Promise(function (resolve, reject) {
       // add complex callback
       filterInputs.push(function (setupError, filterId) {
@@ -205,20 +195,18 @@ function constructFilter(filterName, query) {
       });
 
       // apply filter, call new.. filter method
-      query['new' + filterName].apply(query, filterInputs);
+      // eslint-disable-next-line prefer-spread
+      query["new" + filterName].apply(query, filterInputs);
     });
-
     if (callback) {
       prom.then(function (res) {
         return callback(null, res);
-      })['catch'](function (err) {
+      })["catch"](function (err) {
         return callback(err, null);
       });
     }
-
     return callback ? null : prom;
   };
-
   return Filter;
 }
 
@@ -239,7 +227,6 @@ function EthFilter(query) {
   if (typeof query !== 'object') {
     throw new Error('the EthFilter object must be instantiated with an EthQuery instance (e.g. `const filters = new EthFilter(new EthQuery(provider));`). See github.com/ethjs/ethjs-query for more details..');
   }
-
   self.Filter = constructFilter('Filter', query);
   self.BlockFilter = constructFilter('BlockFilter', query);
   self.PendingTransactionFilter = constructFilter('PendingTransactionFilter', query);
