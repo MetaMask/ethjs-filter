@@ -123,21 +123,22 @@
     "@babel/plugin-transform-object-rest-spread": "^7.0.0",
     "@babel/register": "^7.0.0",
     "babel-loader": "^8.0.0",
-    "chai": "^4.3.10",
-    "cross-env": "^6.0.3",
-    "eslint": "^5.4.0",
+    "chai": "^4.4.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.32.0",
     "ganache-cli": "^6.12.2",
-    "eslint-config-airbnb": "^17.1.1",
-    "eslint-import-resolver-webpack": "^0.2.4",
-    "eslint-plugin-import": "^2.18.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.14.2",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-import-resolver-webpack": "^0.13.8",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "ethjs-abi": "0.2.1",
     "@metamask/ethjs-query": "^0.7.0",
     "ethjs-sha3": "0.1.3",
     "istanbul": "0.4.5",
     "json-loader": "^0.5.7",
-    "mocha": "~7.2.0",
+    "mocha": "^8.4.0",
     "pre-commit": "^1.2.2",
     "rimraf": "^3.0.2",
     "webpack": "^3.12.0"
@@ -146,8 +147,8 @@
     "@babel/runtime": "^7.0.0"
   },
   "engines": {
-    "npm": ">=6",
-    "node": ">=8.17.0"
+    "node": "^10.19 || ^12.22 || ^16.20 || ^18.18 || >=20",
+    "npm": ">=6"
   },
   "keywords": [
     "ethereum",
@@ -168,14 +169,16 @@
       "mocha": true,
       "es6": true
     },
-    "overrides": {
-      "files": [
-        "src/tests/**.js"
-      ],
-      "rules": {
-        "import/no-extraneous-dependencies": 0
+    "overrides": [
+      {
+        "files": [
+          "src/tests/**.js"
+        ],
+        "rules": {
+          "import/no-extraneous-dependencies": 0
+        }
       }
-    },
+    ],
     "parserOptions": {
       "ecmaVersion": 6,
       "sourceType": "module"
@@ -195,13 +198,15 @@
       ],
       "no-console": 1,
       "max-len": 0,
+      "prefer-object-spread": 0,
       "prefer-template": 2,
       "no-use-before-define": 0,
       "newline-per-chained-call": 0,
       "arrow-body-style": [
         2,
         "as-needed"
-      ]
+      ],
+      "arrow-parens": 0
     }
   },
   "publishConfig": {
