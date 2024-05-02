@@ -138,10 +138,10 @@
     "ethjs-sha3": "0.1.3",
     "istanbul": "0.4.5",
     "json-loader": "^0.5.7",
-    "mocha": "^8.4.0",
+    "mocha": "^10.4.0",
     "pre-commit": "^1.2.2",
     "rimraf": "^3.0.2",
-    "webpack": "^3.12.0"
+    "webpack": "^5.91.0"
   },
   "peerDependencies": {
     "@babel/runtime": "^7.0.0"
